@@ -9,18 +9,6 @@ const app = express()
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-let messages = {
-    1:{
-        id: '1',
-        text: 'Hello world',
-        userId: '1'
-    },
-    2: {
-        id: '2',
-        text: 'By world',
-        userId: '2'
-    }
-}
 
 app.use((req,res,next)=>{
     req.me = users[1]
