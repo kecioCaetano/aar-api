@@ -1,18 +1,26 @@
+const models = require('./models/index')
 const { randomUUID } = require('crypto');
 
 require('dotenv').config()
 const port = process.env.PORT;
 
 const express = require('express')
-const app = express()
+const app = express()       
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
 app.use((req,res,next)=>{
-    req.me = users[1]
+    req.context = {
+        models,
+        me: models.users[1],
+    }
     next()
+})
+
+app.get('/session', (req,res) =>{
+    return res.send(users[req.me.id])
 })
 
 app.get('/messages', (req, res) => {
@@ -36,6 +44,12 @@ app.post('/messages', (req,res) => {
     //  once set app.use(express.json()); it is necessary to parse data coming into req.body.
     // const date = Date.parse(req.body.date);
     // const count = Number(req.body.count);
+})
+
+app.delete('/messages/:messageId', (req, res) =>{
+    const { [req.params.messageId] : message, ...otherMessages } = messages 
+    messages = otherMessages
+    return res.send(message)
 })
 
 app.get('/users', (req, res) =>{
@@ -64,14 +78,5 @@ app.listen(process.env.PORT, () =>
 )
 
 
-let users = {
-    1: {
-        id: '1',
-        username: 'Robin Wieruch'
-    },
-    2: {
-        id: '2',
-        username: 'Dave Davis'
-    }
-}
+
 
